@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html" />
+    <meta charset="utf-8" />
+    <title>Algoritmo de Maekawa</title>
+    <meta name="author" content="Julio Sandro Marques Santana & Vinicius Barbosa Mourão" />
+    <meta name="description" content="Ensinando exclusão mútua de forma simples" />
+    <meta name="keywords" content="sistemas distribuídos, algoritmos, servidor central" />
+    <meta name="Resource-type" content="Document" />
+
+    <link rel="stylesheet" type="text/css" href="css/fullpage-ricart&agrawala.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/responsive.css" />
+    <link rel="stylesheet" type="text/css" href="plugins.css" />
+    <link rel="shortcut icon" type="image/png" href="../img/paper-airplane-icon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+</head>
+
+<body>
+    <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fa fa-angle-up icon"></i></button>
+    <div id="wraper sticky">
+
+
+        <section id="page-title">
+            <div class="container-header">
+                <!-- <div class="page-title">
+                </div> -->
+                <div><a href="../site.html" class="btn btn-outline btn-rounded btn-light">Home</a></div>
+                <div><a href="servidor_central.html" class="btn btn-outline btn-rounded btn-light">Servidor Central</a>
+                </div>
+                <div> <a href="../algoritmos/exclusao_anel.html" class="btn btn-outline btn-rounded btn-light">Anel</a>
+                </div>
+                <div><a href="../algoritmos/ricart_agrawala.html" class="btn btn-outline btn-rounded btn-light">Ricart &
+                        Agrawala</a></div>
+                <div><a href="../algoritmos/maekawa.html" class="btn active btn-rounded btn-light">Maekawa</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="stickyConfig">
+            <div class="container">
+                <div class="text">
+                    <h1>Algoritmo de Maekawa</h1>
+                    <p>
+                        Para Maekawa, assim como para <a href="../algoritmos/ricart_agrawala.html">Ricart &
+                            Agrawala</a>, um processo que deseja entrar na seção crítica deve obter
+                        permissão dos outros processos, mas não todos, através da troca de mensagem. Maekawa propõe
+                        que é necessário uma
+                        quantidade k de permisões, onde <b> k < N</b> e <b>N</b> é o número total de processos, de um
+
+                        subconjunto dos processos para ingressar na seção crítica. Esse subconjunto dos
+                        processos deve conter o processos requisitante, ou seja, nas k permisões necessárias,
+                        uma é a resposta dele mesmo. Neste algoritmo o processo que deseja acesso á seção
+                        crítica é chamado de "candidato" e precisa de k "votos" para acessá-la. </p>
+                    <p>
+                        Dado um conjunto com N processos, é construído N subconjuntos com &radic;N processos em cada. O
+                        ideal é que cada subconjunto tenha o máximo de diversificade posível e que um processo esteja em
+                        pelo menos 2, ou idealmente em &radic;N, subconjuntos. A interseção entre 2 subconjutos de
+                        processos não pode ser vazia. Cada processo tem um voto e só pode votar uma vez para um processo
+                        candidato acessar a seção crítica.
+                        O estado do voto
+                        é vísivel a todos os processos de seus subconjutos, o voto é reiniciado segundo uma lógica
+                        descrita mais a baixo. Deste modo todas as propriedades de
+                        exclusão
+                        mútua são atendida.
+                    </p>
+                    <p>
+                        Na imagem abaixo é ilustrado um cenário para exemplificar como funciona a construção dos grupos.
+                        Existem 6 processos que participam da computação
+                        distribuída e são possíveis candidatos a acessar a seção crítica.
+                        O número de subgrupos N vai ser igual ao total de processos existentes, ou seja, serão 6 grupos.
+                        Para a quantidade de processo em cada grupo é utilizado o teto de &radic;N, que vai ser 3.
+                        Com intuito de manter os grupos o mais diversificado possível, de forma que sempre a interseção
+                        entre quaisquer 2 grupos seja 1 processo, foi contruídos os grupos que aparecem na tabela da
+                        imagem.
+                    </p>
+                    <p>Na imagem, o processo 4 quer acessar a sesão crítica, então ele vai selecionar um dos 6 subgrupos
+                        que tenha ele como participante. O grupo selecionado para exemplo foi o G4(0, 2, 4). Logo, o
+                        Processo 4 deve mandar mensagem para os processos 0 e 2 para ganhar permisão de acesso a seção
+                        crítica.
+                        A lógica de resposta e manutenção do voto, é explicada numa seção mais abaixo.
+                    </p>
+                    <p>
+                        Cada processo possui
+                        a seguinte estrutura:
+                    </p>
+                    <div>
+                        <ul>
+                            <li>
+                                Um <button onmouseover="showId()" onmouseout="unshowId()" type="button"
+                                    class="btn btn-light btn-xs">relógio lógico</button> de lamport que vai fixado
+                                ao
+                                identificador de processo no envio de
+                                mensagem, na forma < Pi, T>;
+                            </li>
+                            <li>
+                                Uma <button onmouseover="showState()" onmouseout="unshowState()" type="button" class="btn btn-light
+                                    btn-xs">variável de estado</button>, que diz a ação do processo com relação
+                                a seção crítica;
+                            </li>
+                            <li>
+                                Um <button onmouseover="showQueue()" onmouseout="unshowQueue()" type="button"
+                                    class="btn btn-light btn-xs">fila local
+                                </button> para guardar mensagens de acesso, que segue a lógica FIFO (First-in
+                                First-out);
+                            </li>
+                            <li>
+                                Uma variável de voto, que pode ser: <b>TRUE</b>(já votou) ou <b>FALSE</b>(não votou);
+                            </li>
+                            <p><b>Passe o indicador do mouse sobre cada botão acima para verificar na imagem seu
+                                    respectivo
+                                    componente;</b>
+                            </p>
+                        </ul>
+
+                    </div>
+                    <div>
+                        <div class="firstAlgSection">
+                            <div class="firstAlgContent1">
+                                <div class="alg" id="firstsvg"></div>
+                                <div class="instruction">
+
+                                </div>
+                                <div class="interaction">
+                                    <div class="firstTable">
+                                        <table id='table1' class="table">
+                                            <tr>
+                                                <th>Grupos</th>
+                                                <th>Processos</th>
+                                            </tr>
+                                            <tr>
+                                                <td>G1</td>
+                                                <td>{1,2,3}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>G2</td>
+                                                <td>{0,3,4}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>G3</td>
+                                                <td>{0,5,6}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>G4</td>
+                                                <td>{0,2,4}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>G5</td>
+                                                <td>{1,4,6}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>G6</td>
+                                                <td>{2,5,6}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="sliderArea">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        Seja P, um conjunto de processos P<sub>i</sub>, com 0 &le; i < n, onde n é o número de processos
+                            participantes da computação, cada processo P<sub>i</sub> que deseje entrar na seção crítica
+                            deve enviar k mensagens, um <a href="https://pt.wikipedia.org/wiki/Multicast">multicast</a>,
+                            para os processos
+                            de um dos subconjuntos que ele pertença, para isso presume-se que cada processo tenha um
+                            canal de comunicação com os outros processos. Tendo todas as k respostas do multicast,
+                            todos os votos dos processos pertencentes àquele subconjunto, ele poderá
+                            acessar a seção crítica.
+                    </p>
+                    <p>
+                        Um fator importante nesse algoritmo
+                        é a váriavel de estado do processo e seu voto, pois eles são os fatores que vão orientar as
+                        decisões do processo. A variável de estado diz sua intenção em relação a seção crítica, sendo
+                        de
+                        3 tipos:
+                        <ul>
+                            <li>
+                                <B>RELEASED</B>, o processo está fora dela e não deseja acessá-la.
+                            </li>
+                            <li>
+                                <b>WANTED</b>, o processo deseja acesso.
+                            </li>
+                            <li>
+                                <b>HELD</b>, o processo está acessando.
+                            </li>
+                        </ul>
+                    </p>
+                    <p>
+                        O processo P<sub>i</sub> que deseja entrar na
+                        seção crítica vai mudar sua variável de estado para WANTED e enviar k mensagens para
+                        um subgrupo que ele pertença, e se obtiver todas as k respostas, ele receberá acesso.
+                        A lógica de resposta dos processos é descrita abaixo.
+                    </p>
+                    <ul>
+                        <li>
+                            Se o processo que receber a mensagem estiver com seu
+                            estado HELD ou seu voto como TRUE, então a mensagem de P<sub>i</sub> será enfileirada.
+                        </li>
+                        <li>
+                            Se se estado for WANTED e seu voto FALSE, ele responde e muda seu voto para TRUE se seu
+                            relógio lógico for maior
+                            que o relógio lógico de P<sub>i</sub>. Se for menor, ele enfileirará a mensagem.
+                        </li>
+                        <li>
+                            Se um processo receber mensagem de liberação da seção crítica, ele remove o nó mais
+                            superior da sua fila, muda seu voto para TRUE e envia seu voto para o processo
+                            destino.
+                        </li>
+                        <li>
+                            Quando um processo liberar a seção crítica, ele envia uma mensagem de liberação para os
+                            processo votantes de seu subgrupo.
+                        </li>
+                    </ul>
+
+                    <p>
+                        No algoritmo abaixo os processos PO, P1, P2 e P3 possuem os seguintes subgrupos: <b> G1[P0, P1],
+                            G2[P1, P2] e G3[P1, P3]</b>. Para testar escolha um dos dois cenários iniciais para
+                        executar o algoritmo e depois aperte <b>PLAY</b>, para executar
+                        iterativamente, para avançar no algoritmo aperte <b>AVANÇAR</b> e para reiniciar aperte
+                        <b>RESET</b>.
+
+
+                        <ul>
+                            <li><b>Cenário 1:</b> Pelo menos 1 processo com estado WANTED e o restante com RELEASED;
+                            </li>
+                            <li><b>Cenário 2:</b> Pelo menos 1 processo com estado HELD e o restante, ou com WANTED, ou
+                                com RELEASED; </li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+            <div class="container">
+                <div class="gridSet">
+                    <div class="textSection">
+
+                        <div class="text">
+                            <div class="blankSpace"></div>
+                            <p>
+                                <!--aqui eu acho q tem q criar uma nova classe ou id, nã tenho certeza se é esse mesmo -->
+                            </p>
+                            <p>
+                                No modelo seguinte, experimente modificar o algoritmo:
+                                <ul>
+                                    <li>
+                                        Edite as informações de cada processo antes de executar;
+                                    </li>
+                                    <li>
+                                        Gere composições randômicas, clicando nos botões de cenários, para observar o
+                                        funcionamento;
+                                    </li>
+                                    <li>
+                                        Altere os relógios lógicos;
+                                    </li>
+                                    <li>
+                                        <b>Não esqueça, os grupos são G1[P0, P1], G2[P1, P2] e G3[P1, P3];</b>
+                                    </li>
+                                </ul>
+
+                            </p>
+                        </div>
+                        <b id="transition"></b>
+                    </div>
+                </div>
+                <div class="algSection">
+                    <div class="algContent">
+                        <div class="instruction">
+                            <div id="buttonsR2">
+                                <button onclick="playAlg()" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Avançar</button>
+                                <button onclick="playRand()" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Cenário 1</button>
+                                <button onclick="playRand2(0)" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Cenário 2</button>
+                                <button onclick="reset()" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Reset</button>
+                            </div>
+                        </div>
+                        <div class="alg" id="maekawasvg"></div>
+                        <div class="interaction">
+                            <div id="buttons">
+                                <table id="table2" class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Processo</td>
+                                            <td>Relógios</td>
+                                            <td>Mensagem</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div>
+                                    <button onclick="playCustom()" type="button"
+                                        class="btn btn-rounded btn-light btn-sm">Salvar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+            </div>
+        </section>
+
+
+    </div>
+    <!-- Footer -->
+    <footer id="footer" class="footer-dark ">
+
+        <div class="copyright-content">
+            <div class="container">
+                <div class="copyright-text text-center">&copy; 2018 - Explorando Sistemas. Todos os direitos reservados.
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Go to top button -->
+    <a id="goToTop"><i class="fa fa-angle-up top-icon"></i><i class="fa fa-angle-up"></i></a>
+
+    <script type="text/javascript" src="./js/maekawa.js"></script>
+    <script type="text/javascript" src="../plugin/d3.js"></script>
+
+
+</body>
+
+</html>

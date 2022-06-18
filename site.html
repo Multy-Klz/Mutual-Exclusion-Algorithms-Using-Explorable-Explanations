@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html" />
+    <meta charset="utf-8" />
+    <title>Explorando Sistemas</title>
+    <meta name="author" content="Julio Sandro Marques Santana & Vinicius Barbosa Mourão" />
+    <meta name="description" content="Ensinando conceitos de Sistemas Distribuídos de forma simples" />
+    <meta name="keywords" content="sistemas distribuídos, algoritmos, anel, bully" />
+    <meta name="Resource-type" content="Document" />
+
+    <link rel="stylesheet" type="text/css" href="css/fullpage.css" />
+    <link rel="stylesheet" type="text/css" href="css/pages.css" />
+    <link rel="shortcut icon" type="image/png" href="img/paper-airplane-icon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+</head>
+
+<body>
+    <div id="wrapper">
+        <header id="header">
+            <ul id="menu">
+                <li data-menuanchor="home" class="active"><a href="#home">Home</a></li>
+                <li data-menuanchor="sections"><a href="#sections">Seções</a></li>
+                <li data-menuanchor="about"><a href="#about">Sobre</a></li>
+            </ul>
+        </header>
+        <section id="container">
+            <div id="fullpage">
+                <div class="section" id="section0">
+                    <div class="intro">
+                        <h1>Explorando Sistemas</h1>
+                        <p>Um guia prático para ensinar conceitos de computação distribuída.</p>
+                    </div>
+                </div>
+                <div class="section " id="section1">
+                    <div class="slide" id="slide1"><br><br>
+                        <div class="myContent-nav">
+                            <h1>Algoritmos de Exclusão Mútua</h1>
+                            <div class="col_half">
+                                <p>
+                                    Em um sistema distríbuido é necessário a coordenação das atividades dos
+                                    processos, através da troca de mensagens, devido a existência de recursos
+                                    compartilhados. <b>A Exclusão Mútua</b> garante que os processos acessem
+                                    a Seção Crítica (recursos compartilhados), efetuem
+                                    suas operações e saiam da mesma de forma a não compremeter dados ou recursos
+                                    comuns ao sistema, liberando-a para acesso de outros
+                                    processos.
+                                    A Exclusão Mútua deve respeitar 3 propriedades fundamentais:
+                                </p>
+                                <ul>
+                                    <li> <span style="font-size: 18px"><b>Segurança:</b> No máximo um processo
+                                            por vez
+                                            pode ser executado na
+                                            sessão crítica;</span>
+                                    </li>
+                                    <li><span style="font-size: 18px"><b>Subsistência:</b> As requisições para
+                                            entrar e sair da seção
+                                            crítica
+                                            devem ter sucesso;</span>
+                                    </li>
+                                    <li><span style="font-size: 18px"><b>Ordenação:</b> Se uma requisição para
+                                            entrar na seção aconteceu
+                                            antes
+                                            de outra, então a entrada na seção crítica é garantida nessa
+                                            ordem;</span>
+                                    </li>
+                                </ul>
+                                <p>
+                                    <b>Algoritmos de Exclusão Mútua</b> usam técnicas de trocas de
+                                    mensagens
+                                    para
+                                    efetuar a coordenação desses acessos obedecendo as propriedades descritas.
+                                </p>
+
+                            </div>
+                            <div class="col_half col_last">
+                                <a href="algoritmos/servidor_central.html">
+                                    <div class="nav-unit sec1">
+                                        <div id="canvas1">
+                                            <span style="font-size: 18px"> Servidor Central </span>
+                                            <br>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a href="algoritmos/exclusao_anel.html">
+                                    <div class="nav-unit sec2">
+                                        <div id="canvas2">
+                                            <span style="font-size: 18px"> Anel </span>
+                                            <br>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a href="algoritmos/ricart_agrawala.html">
+                                    <div class="nav-unit sec4">
+                                        <div id="canvas4">
+                                            <span style="font-size: 18px"> Ricart & Agrawala </span>
+                                            <br>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a href="algoritmos/maekawa.html">
+                                    <div class="nav-unit sec3">
+                                        <div id="canvas3">
+                                            <span style="font-size: 18px"> Maekawa </span>
+                                            <br>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    < </div> <div class="section " id="section2">
+                        <div class="sobre">
+                            <h1>Sobre</h1>
+                            <p>
+                                Explorable Explanations (EEs) foram forjadas por um grupo de pessoas com o intuito de
+                                reunir
+                                textos,
+                                imagens, simulações, animações, etc., de forma que um aprendiz possa ler um texto e
+                                interagir ao mesmo tempo.
+                                Nosso projeto contém um conjunto de EEs abordando conceitos/algoritmos relacionados à
+                                disciplinas de Sistemas Distribuídos.
+                                O projeto ainda está em desenvolvimento mas, atualmente, já conta com a descrição de
+                                dois
+                                algoritmos distribuídos de "eleição" de líder.
+                            </p>
+                        </div>
+                        <!-- Footer -->
+                        <footer id="footer" class="footer-light">
+                            <div class="copyright-content">
+                                <div class="container">
+                                    <div class="copyright-text text-center">&copy; 2018 - Explorando Sistemas. Todos os
+                                        direitos reservados. </div>
+                                </div>
+                            </div>
+                        </footer>
+                        <!-- end: Footer -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script type="text/javascript" src="../plugin/d3.js"></script>
+    <script type="text/javascript" src="js/fullpage.js"></script>
+    <script type="text/javascript" src="js/canvas.js"></script>
+    <script type="text/javascript">
+        var myFullpage = new fullpage('#fullpage', {
+            licenseKey: 'OPEN-SOURCE-GPLV3-LICENSE',
+            verticalCentered: true,
+            anchors: ['home', 'sections', 'about'],
+            menu: '#menu',
+            //sectionsColor: ['#40B7E3', '#0798ec', '#0487B6', '#0DAFEA']
+            sectionsColor: ['#1c1f33', , '#1c1f33']
+        });
+    </script>
+</body>
+
+</html>

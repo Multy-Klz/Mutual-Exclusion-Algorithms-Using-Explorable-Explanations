@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html" />
+    <meta charset="utf-8" />
+    <title>Algoritmo de Ricart & Agrawala</title>
+    <meta name="author" content="Julio Sandro Marques Santana & Vinicius Barbosa Mourão" />
+    <meta name="description" content="Ensinando exclusão mútua de forma simples" />
+    <meta name="keywords" content="sistemas distribuídos, algoritmos, servidor central" />
+    <meta name="Resource-type" content="Document" />
+
+    <link rel="stylesheet" type="text/css" href="css/fullpage-ricart&agrawala.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/responsive.css" />
+    <link rel="stylesheet" type="text/css" href="plugins.css" />
+    <link rel="shortcut icon" type="image/png" href="../img/paper-airplane-icon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+</head>
+
+<body>
+    <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fa fa-angle-up icon"></i></button>
+    <div id="wraper sticky">
+
+
+        <section id="page-title">
+            <div class="container-header">
+                <!-- <div class="page-title">
+                </div> -->
+                <div><a href="../site.html" class="btn btn-outline btn-rounded btn-light">Home</a></div>
+                <div><a href="servidor_central.html" class="btn btn-outline btn-rounded btn-light">Servidor Central</a>
+                </div>
+                <div> <a href="../algoritmos/exclusao_anel.html" class="btn btn-outline btn-rounded btn-light">Anel</a>
+                </div>
+                <div><a href="../algoritmos/ricart_agrawala.html" class="btn active btn-rounded btn-light">Ricart &
+                        Agrawala</a></div>
+                <div><a href="../algoritmos/maekawa.html" class="btn btn-outline btn-rounded btn-light">Maekawa</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="stickyConfig">
+            <div class="container">
+                <div class="text">
+                    <h1>Algoritmo de Ricart & Agrawala</h1>
+                    <p>
+                        Este algoritmo é usado para garantir exclusão mútua entre N processos pares em um sistema
+                        distríbuido. Muito similar aos algoritmos de eleição de líder, um vez que um processo P que
+                        deseje entrar na
+                        seção crítica deve enviar uma mensagem
+                        para todos os processos, um <i>Multicast</i>. Para isso presume-se que cada
+                        processo
+                        tenha um canal de comunicação com os outros processos. Tendo todas as
+                        respostas do <i>multicast</i> ele
+                        poderá acessar a seção crítica. Ou seja, um processo só acessa a seção crítica quando todos
+                        "permitirem", respondendo a mensagem do requisitante.
+                    </p>
+                    <p>
+                        Seja P, um conjunto de processos P<sub>i</sub>, com 0 &le; i < n, onde n é o número de processos
+                            participantes da computação, cada processo P<sub>i</sub> deve possuir um <button
+                                onmouseover="showId()" onmouseout="unshowId()" type="button"
+                                class="btn btn-light btn-xs">relógio lógico</button> de
+                            Lamport para anexar na mensagem, uma <button onmouseover="showQueue()"
+                                onmouseout="unshowQueue()" type="button" class="btn btn-light btn-xs">fila
+                            </button> local para armazenar mensagem recebidas e uma
+                            <button onmouseover="showState()" onmouseout="unshowState()" type="button"
+                                class="btn btn-light btn-xs">Variável de estado
+                            </button>. Toda
+                            <button onmouseover="showMessage()" onmouseout="unshowMessage()" type="button"
+                                class="btn btn-light btn-xs">mensagem
+                            </button> enviada pelos processos segue o formato < T,P<sub>i</sub>>
+                                , onde T é o valor do relógio lógico do processo e P<sub>i</sub> é o
+                                identificador do processo. Na imagem abaixo é possível conferir os componentes
+                                deste algoritmo e onde foram alocados para a prototipação.
+                    </p>
+                    <div>
+                        <div class="firstAlgSection">
+                            <div class="firstAlgContent">
+                                <div class="alg" id="firstsvg"></div>
+
+                                <div class="interaction">
+                                    <div id="buttons2">
+
+                                        <button onmouseover="showId()" onmouseout="unshowId()" type="button"
+                                            class="btn btn-rounded btn-id btn-sm">relógio lógico</button>
+                                        <button onmouseover="showMessage()" onmouseout="unshowMessage()" type="button"
+                                            class="btn btn-rounded btn-message btn-sm">mensagem
+                                        </button>
+                                        <button onmouseover="showQueue()" onmouseout="unshowQueue()" type="button"
+                                            class="btn btn-rounded btn-queue btn-sm">fila
+                                        </button>
+                                        <button onmouseover="showState()" onmouseout="unshowState()" type="button"
+                                            class="btn btn-rounded btn-state btn-sm">Variável de estado
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        Um fator importante nesse algoritmo é a váriavel de estado, pois ela é
+                        o primeiro fator que vai orientar as decisões do processo. A variável diz sua intenção em
+                        relação a seção crítica, sendo de 3 tipos:
+                        <ul>
+                            <li>
+                                <B>RELEASED</B>, o processo está fora dela e não deseja acessá-la.
+                            </li>
+                            <li>
+                                <b>WANTED</b>, o processo deseja acesso.
+                            </li>
+                            <li>
+                                <b>HELD</b>, o processo está acessando.
+                            </li>
+                        </ul>
+                    </p>
+                    <p>
+                        Como previamente descrito, quando um processo P<sub>i</sub> deseja entrar na
+                        seção crítica ele muda sua variável de estado para WANTED e envia um multicast para
+                        os demais processos, e se obtiver as resposta de todos os processos, ele receberá acesso e
+                        passará seu estado para HELD.
+                        A lógica de resposta dos processos é descrita abaixo.
+                    </p>
+                    <ul>
+                        <li>
+                            Se o processo que receber a mensagem estiver com seu
+                            estado RELEASED, então ele responderá a mensagem de P<sub>i</sub>.
+                        </li>
+                        <li>
+                            Se o processo que receber a mensagem estiver com o estado WANTED, ele vai comparar o seu
+                            relógio lógico
+                            local, com aquele que veio marcado na mensagem. Se for maior, T<sub>local</sub>
+                            > T <sub>mensagem</sub>, então ele responderá a mensagem. Se for menor, T<sub>local</sub>
+                            < T <sub>mensagem</sub>, então ele enfileirará a mensagem na sua fila, para responder
+                                mais tarde.
+                        </li>
+                        <li>
+                            Se o processo que receber a mensagem estiver com o estado HELD, ele enfileirará a mensagem.
+                        </li>
+                    </ul>
+
+                    <p>
+                        Todo processo que terminar de acessar a seção crítica muda o estado de HELD para RELEASED e
+                        irá responder todas as mensagens que tem em sua fila. Essa fila de mensagem, usa a lógica
+                        FIFO (First in - First out), então as mensagens mais antigas serão respondidas primeiro. Desta
+                        forma, se dois ou mais processos solicitarem acesso a seção crítica simultaneamente,
+                        aquele que tiver o menor tempo lógico receberá as N-1 respostas e acessará antes.
+                    </p>
+
+                    <p>
+                        Teste o algoritmo na animação abaixo, escolha um dos dois cenários iniciais para executar.
+                        <ul>
+                            <li><b>Cenário 1:</b> Pelo menos 1 processo com estado WANTED e o restante com RELEASED;
+                            </li>
+                            <li><b>Cenário 2:</b> Pelo menos 1 processo com estado HELD e o restante, ou com WANTED, ou
+                                com RELEASED; </li>
+                        </ul>
+                    </p>
+                    <p>
+                        Para executar
+                        iterativamente aperte <b>AVANÇAR</b> e para resetar aperte <b>RESET</b>.
+                        Para seguir à próxima animação, veja mais abaixo.
+                    </p>
+                </div>
+            </div>
+            <div class="container">
+                <div class="gridSet">
+                    <div class="textSection">
+
+                        <div class="text">
+                            <div class="blankSpace"></div>
+                            <p>
+                                <!--aqui eu acho q tem q criar uma nova classe ou id, nã tenho certeza se é esse mesmo -->
+                            </p>
+                            <p>
+                                No modelo seguinte, experimente modificar o algoritmo:
+                                <ul>
+                                    <li>
+                                        Edite as informações de cada processo antes de executar. Defina seu Relógio
+                                        Lógico e seu Estado;
+                                    </li>
+                                    <li>
+                                        Você pode gerar composições usando os cenários também;
+                                    </li>
+                                    <li><b>IMPORTANTE!:</b> Antes de executar, <b>aperte em Salvar</b> para atualizar os
+                                        processos;</li>
+                                </ul>
+
+                            </p>
+                        </div>
+                        <b id="transition"></b>
+                    </div>
+                </div>
+                <div class="algSection">
+                    <div class="algContent">
+                        <div class="instruction">
+                            <div id="buttonsR2">
+                                <button onclick="playAlg()" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Avançar</button>
+                                <button onclick="playRand()" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Cenário 1</button>
+                                <button onclick="playRand2(0)" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Cenário 2</button>
+                                <button onclick="reset()" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Reset</button>
+                            </div>
+                        </div>
+                        <div class="alg" id="multicastsvg"></div>
+                        <div class="interaction">
+                            <div id="buttons">
+                                <table id="table2" class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Processo</td>
+                                            <td>Relógios</td>
+                                            <td>Mensagem</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div>
+
+                                    <button onclick="playCustom()" type="button"
+                                        class="btn btn-rounded btn-light btn-sm">Salvar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+            </div>
+        </section>
+
+
+    </div>
+    <!-- Footer -->
+    <footer id="footer" class="footer-dark ">
+
+        <div class="copyright-content">
+            <div class="container">
+                <div class="copyright-text text-center">&copy; 2018 - Explorando Sistemas. Todos os direitos reservados.
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Go to top button -->
+    <a id="goToTop"><i class="fa fa-angle-up top-icon"></i><i class="fa fa-angle-up"></i></a>
+
+    <script type="text/javascript" src="./js/ricart&agrawala.js"></script>
+    <script type="text/javascript" src="../plugin/d3.js"></script>
+
+
+</body>
+
+</html>

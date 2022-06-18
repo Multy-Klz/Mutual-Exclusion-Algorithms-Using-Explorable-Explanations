@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html" />
+    <meta charset="utf-8" />
+    <title>Algoritmo de Exclusão do anel</title>
+    <meta name="author" content="Julio Sandro Marques Santana & Vinicius Barbosa Mourão" />
+    <meta name="description" content="Ensinando exclusão mútua de forma simples" />
+    <meta name="keywords" content="sistemas distribuídos, algoritmos, servidor central" />
+    <meta name="Resource-type" content="Document" />
+
+    <link rel="stylesheet" type="text/css" href="css/fullpage-exclusao_anel.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/responsive.css" />
+    <link rel="stylesheet" type="text/css" href="plugins.css" />
+    <link rel="shortcut icon" type="image/png" href="../img/paper-airplane-icon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+</head>
+
+<body>
+    <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fa fa-angle-up icon"></i></button>
+    <div id="wraper sticky">
+
+
+        <section id="page-title">
+            <div class="container-header">
+                <!-- <div class="page-title">
+                </div> -->
+                <div><a href="../site.html" class="btn btn-outline btn-rounded btn-light">Home</a></div>
+                <div><a href="servidor_central.html" class="btn btn-outline btn-rounded btn-light">Servidor Central</a>
+                </div>
+                <div> <a href="../algoritmos/exclusao_anel.html" class="btn active btn-rounded btn-light">Anel</a>
+                </div>
+                <div><a href="../algoritmos/ricart_agrawala.html" class="btn btn-outline btn-rounded btn-light">Ricart &
+                        Agrawala</a></div>
+                <div><a href="../algoritmos/maekawa.html" class="btn btn-outline btn-rounded btn-light">Maekawa</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="stickyConfig">
+            <div class="container">
+                <div class="text">
+                    <h1>Algoritmo em Anel</h1>
+                    <p>
+                        Este algoritmo é o mais simples para garantir a exclusão mútua em um sistema distríbuido. Ele
+                        utiliza a topologia em Anel, onde cada processo P participante da computação
+                        precisa somente de um canal de comunicação com o processo seguinte.
+                        Deste modo, os processos formam um "laço" circular de comunicação, onde as mensagens são
+                        transmitidas de maneira unidirecional.
+                    </p>
+                    <p>
+                        Seja P, um conjunto de processos P<sub>i</sub>, com 0 &le; i < n, onde n é o número de processos
+                            participantes da computação, cada processo P<sub>i</sub> que deseja acessar
+                            a seção critica deve obter o token de acesso. Neste modelo o token fica sendo
+                            transmitido infinitamente de um processo para o outro no "laço". O processo
+                            pode acessar a seção crítica quando o token passar por ele. Ao acessar a seção crítica, a
+                            transmissão do token fica bloqueada no processo até ele terminar de acessá-la. Na imagem
+                            abaixo você consegue acompanhar quais componentes fazem parte deste algoritmo.
+                    </p>
+
+                    <div>
+                        <div class="firstAlgSection">
+                            <div class="firstAlgContent">
+                                <div class="alg" id="firstsvg"></div>
+                                <div class="interaction">
+
+                                    <div>
+                                        Os processos tem seu estado representado por cores:
+                                        <ul>
+                                            <li>
+                                                <span id="normal" style="color:cornflowerblue">Azul </span>quando
+                                                não
+                                                deseja acessar a seção
+                                                crítica.
+                                            </li>
+                                            <li>
+                                                <span id="request" style="color:yellowgreen">Verde </span>quando
+                                                deseja
+                                                acessar a seção
+                                                crítica.
+                                            </li>
+                                            <li>
+                                                <span id="using" style="color:orange">Laranja </span>quando está
+                                                acessando a seção
+                                                crítica e o token está com sua movimentação
+                                                bloqueada
+                                            </li>
+                                        </ul>
+                                        </p>
+
+                                        <div class="sliderArea">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p>
+                            Para o funcionamento do Algoritmo em Anel acompanhe a imagem abaixo. Os processos
+                            solicitam acesso á seção crítica
+                            aleatória enquanto o
+                            token é transmitido pelos canais de comunicação. Nela você consegue acompanhar todas as
+                            etapas
+                            do gerenciamento de token do algoritmo em anel. Aperte AVANÇAR para
+                            executa-lo iterativamente
+                        </p>
+                        <p>A cada vez que apertar <b> AVANÇAR</b> o token será enviado para o processo seguinte. Neste
+                            modelo, não foi levado em consideração o tempo que o token permanece bloqueado no processo,
+                            pois a representação desse bloqueio não afetaria a dinâmica da animação. Logo, ao clicar em
+                            Avançar o algoritmo considera o momento onde o processo finaliza o acesso à seção crítica e
+                            libera o token para circular novamente.
+                        </p>
+                    </div>
+
+                    <div class="container2">
+                        <div class="gridSet">
+                            <div class="textSection">
+
+                                <div class="text">
+                                    <div class="blankSpace"></div>
+                                    <p>
+                                        <!--aqui eu acho q tem q criar uma nova classe ou id, nã tenho certeza se é esse mesmo -->
+                                    </p>
+                                    <p>
+                                        No modelo seguinte, experimente modificar o algoritmo:
+                                        <ul>
+                                            <li>
+                                                Selecione um processo para solicitar acesso à seção crítica, ou cancelar
+                                                o acesso.
+                                            </li>
+                                        </ul>
+
+                                    </p>
+                                </div>
+                                <b id="transition"></b>
+                            </div>
+                        </div>
+
+                        <div class="algSection">
+                            <div class="algContent">
+                                <div class="instruction">
+                                    <div id="buttonsR2">
+                                        <button onclick="playAlg()" type="button"
+                                            class="btn btn-rounded btn-light btn-sm">Avançar</button>
+                                    </div>
+                                </div>
+                                <div class="alg" id="ringsvg"></div>
+                                <div class="interaction">
+                                    <div id="buttons">
+                                        <select id="combobox"></select>
+                                        <button onclick="requestToken()" type="button"
+                                            class="btn btn-rounded btn-light btn-sm">Pedir acesso</button>
+                                        <button onclick="withdrawToken()" type="button"
+                                            class="btn btn-rounded btn-light btn-sm">Remover acesso</button>
+                                    </div>
+                                    <div class="sliderArea">
+                                        <input class="slider" type="range" min="3" max="8" step="1" value="3"
+                                            id="sliderNodePart"></input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+    </div>
+    <!-- Footer -->
+    <footer id="footer" class="footer-dark ">
+
+        <div class="copyright-content">
+            <div class="container">
+                <div class="copyright-text text-center">&copy; 2018 - Explorando Sistemas. Todos os direitos reservados.
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Go to top button -->
+    <a id="goToTop"><i class="fa fa-angle-up top-icon"></i><i class="fa fa-angle-up"></i></a>
+
+    <script type="text/javascript" src="./js/exclusao_anel.js"></script>
+    <script type="text/javascript" src="../plugin/d3.js"></script>
+
+
+</body>
+
+</html>

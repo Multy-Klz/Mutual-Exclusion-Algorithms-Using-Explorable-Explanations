@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html" />
+    <meta charset="utf-8" />
+    <title>Algoritmo do Servidor Central</title>
+    <meta name="author" content="Julio Sandro Marques Santana & Vinicius Barbosa Mourão" />
+    <meta name="description" content="Ensinando exclusão mútua de forma simples" />
+    <meta name="keywords" content="sistemas distribuídos, algoritmos, servidor central" />
+    <meta name="Resource-type" content="Document" />
+
+    <link rel="stylesheet" type="text/css" href="css/fullpage-servidor_central.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/responsive.css" />
+    <link rel="stylesheet" type="text/css" href="plugins.css" />
+    <link rel="shortcut icon" type="image/png" href="../img/paper-airplane-icon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+</head>
+
+<body>
+    <button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fa fa-angle-up icon"></i></button>
+    <div id="wraper sticky">
+
+
+        <section id="page-title">
+            <div class="container-header">
+                <!-- <div class="page-title">
+                </div> -->
+                <div><a href="../site.html" class="btn btn-outline btn-rounded btn-light">Home</a></div>
+                <div><a href="servidor_central.html" class="active btn btn-rounded btn-light">Servidor Central</a></div>
+                <div> <a href="../algoritmos/exclusao_anel.html" class="btn btn-outline btn-rounded btn-light">Anel</a>
+                </div>
+                <div><a href="../algoritmos/ricart_agrawala.html" class="btn btn-outline btn-rounded btn-light">Ricart &
+                        Agrawala</a></div>
+                <div><a href="../algoritmos/maekawa.html" class="btn btn-outline btn-rounded btn-light">Maekawa</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="stickyConfig">
+            <div class="container">
+                <div class="text">
+                    <h1>Algoritmo do Servidor Central</h1>
+                    <p>
+                        Em um sistema distríbuido que possui recursos compartilhados é necessário efetuar a distribuição
+                        e coordenação de acesso à eles, de forma a evitar inconsistências de dados, erros de
+                        processamento e
+                        bloqueios de recursos
+                        . Os recursos compartilhados também são chamados de seção crítica ou região crítica. Este é
+                        o mais simples
+                        para se obter exclusão mútua em um sistema distríbuido. Ele utiliza um Servidor Central
+                        para gerenciar e coordenar os acessos à seção critica.
+                        Todo processo P que quiser acessar a seção crítica deverá solicitar um token
+                        ao servidor
+                        central. O gerenciamento desse token
+                        é feito pelo servidor central através da troca de mensagens com os processos.
+                    </p>
+                    <p>
+                        A troca de mensagens é centralizada no servidor, ou seja, ele recebe e responde
+                        mensagem de todos os processos, enquanto que os processos não se comunicam entre si. A dinâmica
+                        das
+                        mensagens funciona da seguinte forma:
+
+                        <ul>
+                            <li>
+                                Processos enviam mensagens para o <button onmouseover="showCentral()"
+                                    onmouseout="unshowCentral()" type="button" class="btn btn-light btn-xs">servidor
+                                    central</button> e aguardam resposta.
+                            </li>
+                            <li>
+                                As mensagens tem em sua composição um
+                                identificador de processo (P<sub>i</sub>)
+                                e o conteúdo da mensagem, que pode ser:
+                                solicitação ou liberação da seção crítica.
+
+                            </li>
+                        </ul>
+                    </p>
+                    <p>
+                        Todo processo que receber resposta do servidor central recebe o <button
+                            onmouseover="showToken()" onmouseout="unshowToken()" type="button"
+                            class="btn btn-light btn-xs">token</button> e tem automaticamente liberação para
+                        acessar a seção crítica. É necessário uma administração dessas respostas para
+                        garantir a exclusão mútua. Para isso, o servidor central tem uma fila para armazenar as
+                        requisições dos
+                        processos, ela utiliza a lógica do "Primeiro a Entrar - Primeiro a Sair" (FIFO - First in
+                        First out).
+                    </p>
+                    <p>
+                        A estrutura lógica desse modelo é composta pelo servidor central e seus canais de
+                        comunicação com
+                        cada processo, conforme mostrado abaixo.
+                    </p>
+
+                    <div>
+                        <div class="firstAlgSection">
+                            <div class="firstAlgContent">
+                                <div class="instruction">
+
+
+                                </div>
+                                <div class="alg" id="firstsvg"></div>
+                                <div class="interaction">
+                                    <div id="buttons2">
+                                        <button onmouseover="showCentral()" onmouseout="unshowCentral()" type="button"
+                                            class="btn btn-rounded btn-server btn-sm">Servidor Central</button>
+                                        <button onmouseover="showProcess()" onmouseout="unshowProcess()" type="button"
+                                            class="btn btn-rounded btn-process btn-sm">Processos</button>
+                                        <button onmouseover="showToken()" onmouseout="unshowToken()" type="button"
+                                            class="btn btn-rounded btn-token btn-sm">Token</button>
+                                        <button onmouseover="showQueue()" onmouseout="unshowQueue()" type="button"
+                                            class="btn btn-rounded btn-fila btn-sm">Fila de Processos</button>
+                                    </div>
+                                    <div class="sliderArea">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>
+                        Seja P, um conjunto de processos P<sub>i</sub>, com 0 &le; i < n, onde n é o número de processos
+                            participantes da computação, cada processo P<sub>i</sub> que deseja entrar
+                            na seção critica deve obter um token de acesso. Existe somente um token para ser
+                            distribuído entre os processos requisitantes e seu gerenciamento pelo servidor
+                            central funciona da seguinte forma:
+                            <p>
+                                <ul>
+                                    <li>Se o servidor estiver com o token, ele responde a primeira solicitação
+                                        que
+                                        estiver na sua fila de mensagens.
+                                    </li>
+                                    <li>Se o servidor não estiver com o token ele não responderá e irá
+                                        enfileirar as
+                                        solicitações na fila de mensagem.
+                                    </li>
+                                    <li>
+                                        O servidor recebe o token de volta quando um processo envia uma mensagem
+                                        de liberação de
+                                        acesso.
+                                    </li>
+                                </ul>
+                            </p>
+                            <p>
+                                Este algoritmo satisfaz as propriedades para a exclusão
+                                mútua. Porém, o ponto
+                                negativo é o atraso na resposta de mensagens, onde cada processo pode
+                                ficar
+                                indeterminadamente com o token e assim deixar as requisições muito tempo em
+                                espera.
+                            </p>
+                    </p>
+                    <p>
+                        Abaixo foi construído um modelo para exemplificar o funcionamento do
+                        algoritmo. Na barra horizontal você pode selecionar de 3 a 8 processos para
+                        participarem da computação. Para iniciar a simulação aperte PLAY, para avançar iterativamente
+                        aperte AVANÇAR e para reiniciar aperte RESET.
+                    </p>
+                    <p>Ao clicar em RESET, o algoritmo será reiniciado e será gerado uma nova fila aleatória
+                    </p>
+                </div>
+            </div>
+            <div class="container">
+                <div class="gridSet">
+                    <div class="textSection">
+
+                        <div class="text">
+                            <p>
+                                <!--aqui eu acho q tem q criar uma nova classe ou id, nã tenho certeza se é esse mesmo -->
+                            </p>
+                            <p>
+                                No modelo seguinte, experimente modificar o algoritmo:
+                                <ul>
+                                    <li>
+                                        Defina o número de processos através da barra horizontal.
+                                    </li>
+                                    <li>
+                                        Apague a fila de processos caso queira fazer uma fila personalizada, senão
+                                        aperte em RESET para gerar uma fila nova.
+                                    </li>
+                                    <li>
+                                        Selecione o processo no campo de seleção.
+                                    </li>
+                                    <li>
+                                        Adicione ou remova processos selecionados da
+                                        fila.
+                                    </li>
+                                    <li id="transition">Altere a posição do token para o processo
+                                        selecionado.
+                                    </li>
+                                </ul>
+
+                            </p>
+                            <div class="fadeEffect"></div> <!-- Aqui tem o fade effect basta ativar a classe-->
+                        </div>
+                    </div>
+                </div>
+                <div class="algSection">
+                    <div class="algContent">
+                        <div class="instruction">
+                            <div id="buttonsR2">
+                                <button onclick="playAlg()" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Play</button>
+                            </div>
+                            <div class="buttonsR2">
+
+                                <button onmouseover="showProcessName()" onmouseout="unshowProcessName()" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Mostrar Processos</button>
+                                <b class="litletext">Passe o mouse sobre o botão</b>
+                            </div>
+
+                        </div>
+                        <div class="alg" id="scsvg"></div>
+                        <div class="interaction">
+                            <div id="buttons">
+                                <select id="combobox"></select>
+                                <button onclick="createCustomQueue()" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Adicionar na fila</button>
+                                <button onclick="removeElementinQueue()" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Remover da fila</button>
+                                <button onclick="deleteQueue()" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Limpar a fila</button>
+                                <button onclick="addPToken()" type="button"
+                                    class="btn btn-rounded btn-light btn-sm">Colocar Token</button>
+                            </div>
+                            <div class="sliderArea">
+                                <input class="slider" type="range" min="3" max="8" step="1" value="3"
+                                    id="sliderNodePart"></input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+            </div>
+        </section>
+    </div>
+    <!-- Footer -->
+    <footer id="footer" class="footer-dark ">
+
+        <div class="copyright-content">
+            <div class="container">
+                <div class="copyright-text text-center">&copy; 2018 - Explorando Sistemas. Todos os direitos reservados.
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Go to top button -->
+    <a id="goToTop"><i class="fa fa-angle-up top-icon"></i><i class="fa fa-angle-up"></i></a>
+
+    <script type="text/javascript" src="./js/servidor_central.js"></script>
+    <script type="text/javascript" src="../plugin/d3.js"></script>
+
+
+</body>
+
+</html>
